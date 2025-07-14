@@ -29,6 +29,8 @@ info:
 
 
     <img src="https://i.imgur.com/zQq3VNF.jpg" alt="Imgur">
+    
+    Testing the new output format with changedFiles array.
   version: 1.0.0
   contact: {}
   
