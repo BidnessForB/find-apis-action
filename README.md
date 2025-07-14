@@ -59,21 +59,23 @@ The action outputs a JSON array with the following structure:
 [
   {
     "apiId": "11ad5c34-13c2-43b7-a492-2bb349751285",
-    "filePath": "accounts.yaml",
-    "isRootFile": true
+    "rootFile": "accounts.yaml",
+    "changedFiles": ["accounts.yaml"]
   },
   {
     "apiId": "edd4253d-c264-4a49-b39b-d19fd52e49d4",
-    "filePath": "bar.yaml",
-    "isRootFile": true
+    "rootFile": "bar.yaml",
+    "changedFiles": ["bar.yaml", "bar-schemas.yaml"]
   }
 ]
 ```
 
 Where:
 - `apiId`: The ID of the API from the config section
-- `filePath`: The path of the changed file
-- `isRootFile`: `true` if the file is listed in the `rootFiles` property, `false` otherwise
+- `rootFile`: The primary root file for the API (first one if multiple exist)
+- `changedFiles`: Array of all files that changed and are part of this API
+
+Note: There is one array element per modified API, not per changed file.
 
 ## API File Format
 

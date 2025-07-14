@@ -56,9 +56,19 @@ jobs:
     
     - name: Validate changed API files
       run: |
-        # Parse the API changes and validate each changed file
-        echo '${{ needs.detect-api-changes.outputs.api-changes }}' | jq -r '.[] | .filePath' | while read file; do
-          echo "Validating $file..."
-          # Add your validation logic here
-          # For example: OpenAPI validation, schema checks, etc.
+        # Parse the API changes and validate each changed API
+        echo '${{ needs.detect-api-changes.outputs.api-changes }}' | jq -c '.[]' | while read api; do
+          apiId=$(echo "$api" | jq -r '.apiId')
+          rootFile=$(echo "$api" | jq -r '.rootFile')
+          changedFiles=$(echo "$api" | jq -r '.changedFiles[]')
+          
+          echo "Validating API $apiId..."
+          echo "  Root file: $rootFile"
+          echo "  Changed files:"
+          
+          for file in $changedFiles; do
+            echo "    - $file"
+            # Add your validation logic here
+            # For example: OpenAPI validation, schema checks, etc.
+          done
         done

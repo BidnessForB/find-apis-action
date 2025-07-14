@@ -125,6 +125,8 @@ function findApiChanges() {
     
     console.log(`Processing API ${apiData.apiId} with ${apiData.filePaths.length} defined files`);
     
+    const apiChangedFiles = [];
+    
     // Check which changed files match this API's file paths
     for (const changedFile of changedFiles) {
       for (const apiFilePath of apiData.filePaths) {
@@ -134,17 +136,25 @@ function findApiChanges() {
             changedFile.endsWith('/' + apiFilePath) ||
             path.resolve(changedFile) === path.resolve(apiFilePath)) {
           
-          const isRootFile = apiData.rootFiles.includes(apiFilePath);
-          
-          results.push({
-            apiId: apiData.apiId,
-            filePath: changedFile,
-            isRootFile: isRootFile
-          });
-          
-          console.log(`Match found: ${changedFile} for API ${apiData.apiId} (root: ${isRootFile})`);
+          // Avoid duplicates
+          if (!apiChangedFiles.includes(changedFile)) {
+            apiChangedFiles.push(changedFile);
+            console.log(`Match found: ${changedFile} for API ${apiData.apiId}`);
+          }
         }
       }
+    }
+    
+    // If this API has changed files, add it to results
+    if (apiChangedFiles.length > 0) {
+      // Get the root file (first one if multiple exist)
+      const rootFile = apiData.rootFiles.length > 0 ? apiData.rootFiles[0] : null;
+      
+      results.push({
+        apiId: apiData.apiId,
+        rootFile: rootFile,
+        changedFiles: apiChangedFiles
+      });
     }
   }
   
