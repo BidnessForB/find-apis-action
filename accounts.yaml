@@ -3,6 +3,7 @@ info:
   title: Retail Accounts API
   description: >-
     Endpoints for frontend implementations when it comes to the account space.
+    Updated for testing API change detection.
 
     Add some new documentation 
 
