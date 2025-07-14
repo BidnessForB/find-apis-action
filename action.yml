@@ -1,0 +1,29 @@
+name: 'Find API Changes'
+description: 'Find files that have changed and match API definitions in .postman directory'
+author: 'GitHub Copilot'
+
+inputs:
+  postman-directory:
+    description: 'Directory containing Postman API files'
+    required: false
+    default: '.postman'
+  base-ref:
+    description: 'Base reference for comparison'
+    required: false
+    default: 'HEAD~1'
+  output-format:
+    description: 'Output format (json or github)'
+    required: false
+    default: 'json'
+
+outputs:
+  api-changes:
+    description: 'JSON array of changed API files'
+    value: ${{ steps.find-changes.outputs.api-changes }}
+  has-changes:
+    description: 'Whether any API changes were found'
+    value: ${{ steps.find-changes.outputs.has-changes }}
+
+runs:
+  using: 'node20'
+  main: 'action.js'

@@ -1,0 +1,64 @@
+name: API Change Detection
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  detect-api-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      has-api-changes: ${{ steps.find-apis.outputs.has-changes }}
+      api-changes: ${{ steps.find-apis.outputs.api-changes }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2  # Need at least 2 commits for comparison
+    
+    - name: Find API changes
+      id: find-apis
+      # Replace 'your-org/find-apis-action@v1' with the actual location of this action
+      uses: ./  # Use this for local testing
+      with:
+        postman-directory: '.postman'
+        base-ref: 'HEAD~1'
+        output-format: 'github'
+  
+  notify-api-changes:
+    needs: detect-api-changes
+    if: needs.detect-api-changes.outputs.has-api-changes == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Process API changes
+      run: |
+        echo "API changes detected!"
+        echo '${{ needs.detect-api-changes.outputs.api-changes }}' | jq '.'
+        
+        # Example: Send notification, trigger deployment, etc.
+        # You can parse the JSON and take specific actions based on:
+        # - Which APIs changed
+        # - Which files changed
+        # - Whether root files changed
+  
+  validate-apis:
+    needs: detect-api-changes
+    if: needs.detect-api-changes.outputs.has-api-changes == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Validate changed API files
+      run: |
+        # Parse the API changes and validate each changed file
+        echo '${{ needs.detect-api-changes.outputs.api-changes }}' | jq -r '.[] | .filePath' | while read file; do
+          echo "Validating $file..."
+          # Add your validation logic here
+          # For example: OpenAPI validation, schema checks, etc.
+        done

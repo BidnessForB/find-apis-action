@@ -1,0 +1,25 @@
+{
+  "name": "find-apis-action",
+  "version": "1.0.0",
+  "description": "GitHub Action to find changed files matching API definitions in .postman directory",
+  "main": "action.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "github-action",
+    "postman",
+    "api",
+    "changes",
+    "git"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/exec": "^1.1.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

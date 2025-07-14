@@ -1,0 +1,683 @@
+openapi: 3.0.3
+info:
+  title: Retail Accounts API
+  description: >-
+    Endpoints for frontend implementations when it comes to the account space.
+
+    Add some new documentation 
+
+    Responses can be visualized to give a clearer picture on what responses
+    provide. 
+    
+    This is the new stuff new documentation about stuff
+
+    Make sure to select the respective Environment file when making calls for
+    the Collection  
+
+
+    <img src="https://i.imgur.com/ymcwlzB.gif" alt="Imgur">
+
+
+    Reference image example here:  
+
+
+    <img src="https://i.imgur.com/WbEHxDz.jpg" alt="Imgur">
+
+      
+    and example of Date  
+
+
+    <img src="https://i.imgur.com/zQq3VNF.jpg" alt="Imgur">
+  version: 1.0.0
+  contact: {}
+  
+servers:
+  - url: http://localhost:3000
+paths:
+  
+  /accounts/{accountNumber}/statement/latest:
+    get:
+      tags:
+        - Statement
+      summary: Latest
+      description: Use the Statement/Latest to see the account and balance of your user.
+      operationId: latest
+      parameters:
+        - name: accountNumber
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 123ABC
+      responses:
+        '200':
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    description: The account balance
+                    type: object
+                    properties:
+                      closing:
+                        description: The closing value
+                        type: number
+                        example: 979.96
+                      opening:
+                        type: number
+                        example: 335.77
+                        description: This is the opening amount
+                  money:
+                    type: object
+                    description: the thng
+                    properties:
+                      in:
+                        description: The thing
+                        type: number
+                        example: 929.15
+                      out:
+                        type: number
+                        example: 286.06
+                        description:  this is the desc
+                  period:
+                    type: string
+                    example: latest
+                    description: This is the period parameter
+                  transactions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                          example: 402.81
+                        balance:
+                          type: number
+                          example: 871.61
+                        date:
+                          type: string
+                          example: >-
+                            Mon Oct 09 2023 18:38:56 GMT-0500 (Central Daylight
+                            Time)
+                        description:
+                          type: string
+                          example: McLaughlin, Rolfson and Mueller
+                        type:
+                          type: string
+                          example: deposit
+                    example:
+                      - amount: 402.81
+                        balance: 871.61
+                        date: >-
+                          Mon Oct 09 2023 18:38:56 GMT-0500 (Central Daylight
+                          Time)
+                        description: McLaughlin, Rolfson and Mueller
+                        type: deposit
+                      - amount: 84.71
+                        balance: 161.04
+                        date: >-
+                          Mon Oct 09 2023 13:11:29 GMT-0500 (Central Daylight
+                          Time)
+                        description: DuBuque, Crist and Reilly
+                        type: withdrawal
+                      - amount: 428.64
+                        balance: 307.55
+                        date: >-
+                          Mon Oct 09 2023 10:31:58 GMT-0500 (Central Daylight
+                          Time)
+                        description: Thiel - Turcotte
+                        type: payment
+                      - amount: 432.84
+                        balance: 964.86
+                        date: >-
+                          Mon Oct 09 2023 12:07:32 GMT-0500 (Central Daylight
+                          Time)
+                        description: Reichel and Sons
+                        type: deposit
+                      - amount: 693.52
+                        balance: 631.2
+                        date: >-
+                          Mon Oct 09 2023 16:33:45 GMT-0500 (Central Daylight
+                          Time)
+                        description: Gleason, Beatty and Erdman
+                        type: withdrawal
+                      - amount: 486.91
+                        balance: 865.38
+                        date: >-
+                          Mon Oct 09 2023 18:01:47 GMT-0500 (Central Daylight
+                          Time)
+                        description: Lemke, Glover and Frami
+                        type: invoice
+                      - amount: 42.23
+                        balance: 272.76
+                        date: >-
+                          Tue Oct 10 2023 00:58:52 GMT-0500 (Central Daylight
+                          Time)
+                        description: Cartwright - O'Conner
+                        type: invoice
+                      - amount: 231.86
+                        balance: 959.1
+                        date: >-
+                          Mon Oct 09 2023 16:46:21 GMT-0500 (Central Daylight
+                          Time)
+                        description: Adams and Sons
+                        type: payment
+                      - amount: 540.18
+                        balance: 726.1
+                        date: >-
+                          Mon Oct 09 2023 22:40:25 GMT-0500 (Central Daylight
+                          Time)
+                        description: Harvey, Ferry and Bruen
+                        type: withdrawal
+                      - amount: 565.76
+                        balance: 922.8
+                        date: >-
+                          Tue Oct 10 2023 06:14:08 GMT-0500 (Central Daylight
+                          Time)
+                        description: Altenwerth, Rath and Hammes
+                        type: payment
+              examples:
+                200 OK:
+                  value:
+                    balance:
+                      closing: 979.96
+                      opening: 335.77
+                    money:
+                      in: 929.15
+                      out: 286.06
+                    period: latest
+                    transactions:
+                      - amount: 402.81
+                        balance: 871.61
+                        date: >-
+                          Mon Oct 09 2023 18:38:56 GMT-0500 (Central Daylight
+                          Time)
+                        description: McLaughlin, Rolfson and Mueller
+                        type: deposit
+                      - amount: 84.71
+                        balance: 161.04
+                        date: >-
+                          Mon Oct 09 2023 13:11:29 GMT-0500 (Central Daylight
+                          Time)
+                        description: DuBuque, Crist and Reilly
+                        type: withdrawal
+                      - amount: 428.64
+                        balance: 307.55
+                        date: >-
+                          Mon Oct 09 2023 10:31:58 GMT-0500 (Central Daylight
+                          Time)
+                        description: Thiel - Turcotte
+                        type: payment
+                      - amount: 432.84
+                        balance: 964.86
+                        date: >-
+                          Mon Oct 09 2023 12:07:32 GMT-0500 (Central Daylight
+                          Time)
+                        description: Reichel and Sons
+                        type: deposit
+                      - amount: 693.52
+                        balance: 631.2
+                        date: >-
+                          Mon Oct 09 2023 16:33:45 GMT-0500 (Central Daylight
+                          Time)
+                        description: Gleason, Beatty and Erdman
+                        type: withdrawal
+                      - amount: 486.91
+                        balance: 865.38
+                        date: >-
+                          Mon Oct 09 2023 18:01:47 GMT-0500 (Central Daylight
+                          Time)
+                        description: Lemke, Glover and Frami
+                        type: invoice
+                      - amount: 42.23
+                        balance: 272.76
+                        date: >-
+                          Tue Oct 10 2023 00:58:52 GMT-0500 (Central Daylight
+                          Time)
+                        description: Cartwright - O'Conner
+                        type: invoice
+                      - amount: 231.86
+                        balance: 959.1
+                        date: >-
+                          Mon Oct 09 2023 16:46:21 GMT-0500 (Central Daylight
+                          Time)
+                        description: Adams and Sons
+                        type: payment
+                      - amount: 540.18
+                        balance: 726.1
+                        date: >-
+                          Mon Oct 09 2023 22:40:25 GMT-0500 (Central Daylight
+                          Time)
+                        description: Harvey, Ferry and Bruen
+                        type: withdrawal
+                      - amount: 565.76
+                        balance: 922.8
+                        date: >-
+                          Tue Oct 10 2023 06:14:08 GMT-0500 (Central Daylight
+                          Time)
+                        description: Altenwerth, Rath and Hammes
+                        type: payment
+  /accounts/{accountNumber}/statement/date:
+    get:
+      tags:
+        - Statement
+      summary: Date
+      description: >-
+        Use the statement/date endpoint to retrieve the dates of the
+        transactions
+      operationId: date
+      parameters:
+        - name: accountNumber
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 123ABC
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                from:
+                  type: string
+                  example: Wed Jan 11 2023 00:50:06 GMT-0600 (Central Standard Time)
+                to:
+                  type: string
+                  example: Mon Oct 09 2023 11:06:39 GMT-0500 (Central Daylight Time)
+            examples:
+              Date:
+                value:
+                  from: Wed Jan 11 2023 00:50:06 GMT-0600 (Central Standard Time)
+                  to: Mon Oct 09 2023 11:06:39 GMT-0500 (Central Daylight Time)
+      responses:
+        '200':
+          description: 200 OK
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: close
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+            Date:
+              schema:
+                type: string
+                example: Mon, 14 Jun 2021 14:30:25 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"96-S/5iQ2y1qqIInh5BwoPc+chvDJU"
+            Server:
+              schema:
+                type: string
+                example: nginx
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+            Vary:
+              schema:
+                type: string
+                example: Accept-Encoding
+            X-RateLimit-Limit:
+              schema:
+                type: string
+                example: '120'
+            X-RateLimit-Remaining:
+              schema:
+                type: string
+                example: '119'
+            X-RateLimit-Reset:
+              schema:
+                type: string
+                example: '1623681083'
+            x-srv-span:
+              schema:
+                type: string
+                example: v=1;s=210e5b055e5bd71e
+            x-srv-trace:
+              schema:
+                type: string
+                example: v=1;t=d33d68b932344fce
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: object
+                    properties:
+                      closing:
+                        type: number
+                        example: 458.28
+                      opening:
+                        type: number
+                        example: 99.99
+                  money:
+                    type: object
+                    properties:
+                      in:
+                        type: number
+                        example: 164.88
+                      out:
+                        type: number
+                        example: 579.77
+                  period:
+                    type: object
+                    properties:
+                      from:
+                        type: string
+                        example: MK0383607P93WT18330
+                      to:
+                        type: string
+                        example: >-
+                          Mon Oct 09 2023 11:34:41 GMT-0500 (Central Daylight
+                          Time)
+                  transactions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                          example: 717.65
+                        balance:
+                          type: number
+                          example: 137.07
+                        date:
+                          type: string
+                          example: >-
+                            Mon Oct 09 2023 13:52:40 GMT-0500 (Central Daylight
+                            Time)
+                        description:
+                          type: string
+                          example: MacGyver LLC
+                        type:
+                          type: string
+                          example: invoice
+                    example:
+                      - amount: 717.65
+                        balance: 137.07
+                        date: >-
+                          Mon Oct 09 2023 13:52:40 GMT-0500 (Central Daylight
+                          Time)
+                        description: MacGyver LLC
+                        type: invoice
+                      - amount: 548.43
+                        balance: 153.57
+                        date: >-
+                          Mon Oct 09 2023 16:27:31 GMT-0500 (Central Daylight
+                          Time)
+                        description: Beatty, Paucek and Gulgowski
+                        type: payment
+                      - amount: 141.57
+                        balance: 621.31
+                        date: >-
+                          Tue Oct 10 2023 01:11:40 GMT-0500 (Central Daylight
+                          Time)
+                        description: Baumbach - Feest
+                        type: payment
+                      - amount: 961.64
+                        balance: 673.77
+                        date: >-
+                          Mon Oct 09 2023 22:04:53 GMT-0500 (Central Daylight
+                          Time)
+                        description: Witting and Sons
+                        type: payment
+                      - amount: 283.83
+                        balance: 431.27
+                        date: >-
+                          Mon Oct 09 2023 18:18:37 GMT-0500 (Central Daylight
+                          Time)
+                        description: Hoeger and Sons
+                        type: invoice
+                      - amount: 533.98
+                        balance: 497.56
+                        date: >-
+                          Mon Oct 09 2023 15:10:26 GMT-0500 (Central Daylight
+                          Time)
+                        description: Collins - Rau
+                        type: withdrawal
+                      - amount: 311.25
+                        balance: 309.01
+                        date: >-
+                          Mon Oct 09 2023 11:17:16 GMT-0500 (Central Daylight
+                          Time)
+                        description: Dickens, Goodwin and Swaniawski
+                        type: deposit
+                      - amount: 70.13
+                        balance: 510.07
+                        date: >-
+                          Tue Oct 10 2023 07:51:59 GMT-0500 (Central Daylight
+                          Time)
+                        description: Kemmer - Simonis
+                        type: deposit
+                      - amount: 516.64
+                        balance: 85.61
+                        date: >-
+                          Tue Oct 10 2023 05:18:37 GMT-0500 (Central Daylight
+                          Time)
+                        description: Johnston Inc
+                        type: invoice
+                      - amount: 236.84
+                        balance: 451.95
+                        date: >-
+                          Tue Oct 10 2023 01:58:56 GMT-0500 (Central Daylight
+                          Time)
+                        description: Gulgowski LLC
+                        type: withdrawal
+              examples:
+                200 OK:
+                  value:
+                    balance:
+                      closing: 458.28
+                      opening: 99.99
+                    money:
+                      in: 164.88
+                      out: 579.77
+                    period:
+                      from: MK0383607P93WT18330
+                      to: >-
+                        Mon Oct 09 2023 11:34:41 GMT-0500 (Central Daylight
+                        Time)
+                    transactions:
+                      - amount: 717.65
+                        balance: 137.07
+                        date: >-
+                          Mon Oct 09 2023 13:52:40 GMT-0500 (Central Daylight
+                          Time)
+                        description: MacGyver LLC
+                        type: invoice
+                      - amount: 548.43
+                        balance: 153.57
+                        date: >-
+                          Mon Oct 09 2023 16:27:31 GMT-0500 (Central Daylight
+                          Time)
+                        description: Beatty, Paucek and Gulgowski
+                        type: payment
+                      - amount: 141.57
+                        balance: 621.31
+                        date: >-
+                          Tue Oct 10 2023 01:11:40 GMT-0500 (Central Daylight
+                          Time)
+                        description: Baumbach - Feest
+                        type: payment
+                      - amount: 961.64
+                        balance: 673.77
+                        date: >-
+                          Mon Oct 09 2023 22:04:53 GMT-0500 (Central Daylight
+                          Time)
+                        description: Witting and Sons
+                        type: payment
+                      - amount: 283.83
+                        balance: 431.27
+                        date: >-
+                          Mon Oct 09 2023 18:18:37 GMT-0500 (Central Daylight
+                          Time)
+                        description: Hoeger and Sons
+                        type: invoice
+                      - amount: 533.98
+                        balance: 497.56
+                        date: >-
+                          Mon Oct 09 2023 15:10:26 GMT-0500 (Central Daylight
+                          Time)
+                        description: Collins - Rau
+                        type: withdrawal
+                      - amount: 311.25
+                        balance: 309.01
+                        date: >-
+                          Mon Oct 09 2023 11:17:16 GMT-0500 (Central Daylight
+                          Time)
+                        description: Dickens, Goodwin and Swaniawski
+                        type: deposit
+                      - amount: 70.13
+                        balance: 510.07
+                        date: >-
+                          Tue Oct 10 2023 07:51:59 GMT-0500 (Central Daylight
+                          Time)
+                        description: Kemmer - Simonis
+                        type: deposit
+                      - amount: 516.64
+                        balance: 85.61
+                        date: >-
+                          Tue Oct 10 2023 05:18:37 GMT-0500 (Central Daylight
+                          Time)
+                        description: Johnston Inc
+                        type: invoice
+                      - amount: 236.84
+                        balance: 451.95
+                        date: >-
+                          Tue Oct 10 2023 01:58:56 GMT-0500 (Central Daylight
+                          Time)
+                        description: Gulgowski LLC
+                        type: withdrawal
+  /accounts/{accountNumber}:
+    summary: Endpoints for CRUD operations on Accounts
+    get:
+      summary: Account overview
+      responses:
+        '200':
+          description: Basic accounts data.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/accountInfo"
+                type: object
+                properties:
+                  balance:
+                    type: object
+                    properties:
+                      available:
+                        type: number
+                        example: 109.58
+                      present:
+                        type: number
+                        example: 265.53
+                  details:
+                    type: object
+                    properties:
+                      domestic:
+                        type: object
+                        properties:
+                          account:
+                            type: string
+                            example: '34183769'
+                          routing:
+                            type: string
+                            example: '69437301'
+                      international:
+                        type: object
+                        properties:
+                          bic:
+                            type: string
+                            example: AAQIMWT1
+                          iban:
+                            type: string
+                            example: '{AL10010054848GYQ8536W4967Q3R}'
+                  interestRate:
+                    type: number
+                    example: 0.01
+                  lastStatementDate:
+                    type: string
+                    example: Tue Oct 10 2023 00:41:55 GMT-0500 (Central Daylight Time)
+                  type:
+                    type: string
+                    example: Savings Account
+              examples:
+                200 OK:
+                  value:
+                    balance:
+                      available: 109.58
+                      present: 265.53
+                    details:
+                      domestic:
+                        account: '34183769'
+                        routing: '69437301'
+                      international:
+                        bic: AAQIMWT1
+                        iban: '{AL10010054848GYQ8536W4967Q3R}'
+                    interestRate: 0.01
+                    lastStatementDate: Tue Oct 10 2023 00:41:55 GMT-0500 (Central Daylight Time)
+                    type: Savings Account
+  
+            
+    post: 
+      summary: Create an account
+      
+      responses:
+        '201':
+          description: Successful account creation
+      
+    parameters:
+        - name: accountNumber
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 123ABC
+
+  
+components:
+  schemas: 
+    accountInfo:
+      description: The desc
+      type: object
+      properties:
+        details:
+          type: object
+          properties:
+            domestic:
+              type: object
+              properties:
+                account:
+                  type: string
+                routing:
+                  type: string
+            international:
+              type: object
+              properties:
+                bic:
+                  type: string
+                iban:
+                  type: string
+        type:
+          type: string
+        
+
+    
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+tags:
+  - name: Statement
