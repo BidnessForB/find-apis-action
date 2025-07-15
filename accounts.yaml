@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Retail Accounts API thing
+  title: Retail Accounts API 
   description: >-
     Endpoints for frontend implementations when it comes to the account space.
     Updated bar API for testing.
