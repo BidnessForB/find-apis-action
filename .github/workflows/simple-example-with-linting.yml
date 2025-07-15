@@ -10,6 +10,10 @@ on:
 jobs:
   detect-changes:
     runs-on: ubuntu-latest
+    outputs:
+      has-changes: ${{ steps.api-changes.outputs.has-changes }}
+      api-changes: ${{ steps.api-changes.outputs.api-changes }}
+      matrix-data: ${{ steps.prepare-matrix.outputs.matrix-data }}
     
     steps:
     - name: Checkout code
@@ -40,29 +44,39 @@ jobs:
           echo "No API changes detected"
         fi
     
-    - name: Install Postman CLI
+    - name: Prepare matrix data
+      id: prepare-matrix
       if: steps.api-changes.outputs.has-changes == 'true'
       run: |
-        
+        matrix_data=$(echo '${{ steps.api-changes.outputs.api-changes }}' | jq -c '{include: [.[] | {apiId: .apiId, rootFile: .rootFile, integrationId: .integrationId}]}')
+        echo "matrix-data=$matrix_data" >> $GITHUB_OUTPUT
+        echo "Matrix data: $matrix_data"
+
+  lint-apis:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.detect-changes.outputs.matrix-data) }}
+    name: Lint API ${{ matrix.rootFile }} - ${{ matrix.apiId }}
+    
+    steps:
+    - name: Install Postman CLI
+      run: |
         curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
         echo "$HOME/.postman/bin" >> $GITHUB_PATH
         postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
     
-    - name: Lint changed APIs
-      if: steps.api-changes.outputs.has-changes == 'true'
+    - name: Lint API
       run: |
-        echo "Linting changed APIs..."
-        echo '${{ steps.api-changes.outputs.api-changes }}' | jq -c '.[]' | while read api; do
-          apiId=$(echo "$api" | jq -r '.apiId')
-          integrationId=$(echo "$api" | jq -r '.integrationId')
-          
-          echo "Linting API: $apiId"
-          
-          if [ "$integrationId" != "null" ] && [ -n "$integrationId" ]; then
-            echo "  Running: postman api lint $apiId --integration-id $integrationId"
-            postman api lint "$apiId" --integration-id "$integrationId"
-          else
-            echo "  Running: postman api lint $apiId"
-            postman api lint "$apiId"
-          fi
-        done
+        echo "Linting API: ${{ matrix.apiId }}"
+        echo "Root file: ${{ matrix.rootFile }}"
+        echo "Integration ID: ${{ matrix.integrationId }}"
+        
+        if [ "${{ matrix.integrationId }}" != "null" ] && [ -n "${{ matrix.integrationId }}" ]; then
+          echo "Running: postman api lint ${{ matrix.apiId }} --integration-id ${{ matrix.integrationId }}"
+          postman api lint "${{ matrix.apiId }}" --integration-id "${{ matrix.integrationId }}"
+        else
+          echo "Running: postman api lint ${{ matrix.apiId }}"
+          postman api lint "${{ matrix.apiId }}"
+        fi
