@@ -17,4 +17,3 @@ files[] = {"path":"accounts.yaml","metaData":{}}
 
 [config.relations.apiDefinition.metaData]
 type = openapi:3
-rootFiles[] = accounts.yaml
