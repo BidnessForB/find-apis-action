@@ -29,7 +29,7 @@ A GitHub Action that finds files in the current commit which have changed since 
     echo "Changes: ${{ steps.api-changes.outputs.api-changes }}"
 ```
 
-### As a Workflow Step
+### As a Workflow Step foo
 
 ```yaml
 - name: Find API changes
