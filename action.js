@@ -150,6 +150,132 @@ function parseApiFile(filePath) {
 }
 
 /**
+ * Install Postman CLI
+ */
+async function installPostmanCli() {
+  try {
+    core.info('Installing Postman CLI...');
+    
+    // Check if postman CLI is already installed
+    try {
+      await exec.exec('postman', ['--version'], { silent: true });
+      core.info('Postman CLI is already installed');
+      return;
+    } catch {
+      // CLI not installed, proceed with installation
+    }
+    
+    // Download and install Postman CLI
+    await exec.exec('sh', ['-c', 'curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh']);
+    
+    // Add Postman CLI to PATH
+    const postmanBinPath = `${process.env.HOME}/.postman/bin`;
+    core.addPath(postmanBinPath);
+    
+    // Verify installation
+    await exec.exec('postman', ['--version']);
+    core.info('Postman CLI installed successfully');
+  } catch (error) {
+    throw new Error(`Failed to install Postman CLI: ${error.message}`);
+  }
+}
+
+/**
+ * Login to Postman using API key
+ */
+async function loginToPostman(apiKey) {
+  try {
+    core.info('Logging in to Postman...');
+    await exec.exec('postman', ['login', '--with-api-key', apiKey], { silent: true });
+    core.info('Successfully logged in to Postman');
+  } catch (error) {
+    throw new Error(`Failed to login to Postman: ${error.message}`);
+  }
+}
+
+/**
+ * Lint a single API
+ */
+async function lintApi(apiId, integrationId = null) {
+  try {
+    let output = '';
+    let errorOutput = '';
+    
+    const options = {
+      listeners: {
+        stdout: (data) => {
+          output += data.toString();
+        },
+        stderr: (data) => {
+          errorOutput += data.toString();
+        }
+      }
+    };
+    
+    const args = ['api', 'lint', apiId];
+    if (integrationId && integrationId !== 'null') {
+      args.push('--integration-id', integrationId);
+    }
+    
+    core.info(`Linting API: ${apiId}${integrationId ? ` with integration ID: ${integrationId}` : ''}`);
+    
+    const exitCode = await exec.exec('postman', args, options);
+    
+    return {
+      apiId,
+      integrationId,
+      success: exitCode === 0,
+      output: output.trim(),
+      error: errorOutput.trim()
+    };
+  } catch (error) {
+    return {
+      apiId,
+      integrationId,
+      success: false,
+      output: '',
+      error: error.message
+    };
+  }
+}
+
+/**
+ * Run linting on all detected API changes
+ */
+async function runApiLinting(apiChanges, postmanApiKey) {
+  if (!apiChanges || apiChanges.length === 0) {
+    core.info('No API changes to lint');
+    return [];
+  }
+  
+  core.info(`Starting linting for ${apiChanges.length} APIs...`);
+  
+  // Install Postman CLI and login
+  await installPostmanCli();
+  await loginToPostman(postmanApiKey);
+  
+  const lintResults = [];
+  
+  for (const apiChange of apiChanges) {
+    const result = await lintApi(apiChange.apiId, apiChange.integrationId);
+    lintResults.push(result);
+    
+    if (result.success) {
+      core.info(`✅ API ${result.apiId} linting passed`);
+    } else {
+      core.error(`❌ API ${result.apiId} linting failed: ${result.error}`);
+    }
+  }
+  
+  const successCount = lintResults.filter(r => r.success).length;
+  const failCount = lintResults.length - successCount;
+  
+  core.info(`Linting completed: ${successCount} passed, ${failCount} failed`);
+  
+  return lintResults;
+}
+
+/**
  * Main function to find API changes
  */
 async function findApiChanges(postmanDir, baseRef) {
@@ -224,6 +350,8 @@ async function run() {
     const postmanDir = core.getInput('postman-directory') || '.postman';
     const baseRef = core.getInput('base-ref') || 'HEAD~1';
     const outputFormat = 'json';
+    const runLint = core.getInput('run-lint') === 'true';
+    const postmanApiKey = process.env.POSTMAN_API_KEY;
     
     core.info(`Searching for API changes in ${postmanDir}`);
     core.info(`Comparing against ${baseRef}`);
@@ -236,17 +364,55 @@ async function run() {
     core.setOutput('api-changes', jsonOutput);
     core.setOutput('has-changes', results.length > 0 ? 'true' : 'false');
     
+    // Run linting if enabled and changes were found
+    let lintResults = [];
+    if (runLint && results.length > 0) {
+      if (!postmanApiKey) {
+        core.setFailed('POSTMAN_API_KEY environment variable is required when run-lint is enabled');
+        return;
+      }
+      
+      core.info('Running API linting...');
+      lintResults = await runApiLinting(results, postmanApiKey);
+      
+      // Check if any linting failed
+      const failedLints = lintResults.filter(r => !r.success);
+      if (failedLints.length > 0) {
+        core.warning(`${failedLints.length} API(s) failed linting`);
+        // Optionally set as failed if you want the action to fail on lint errors
+        // core.setFailed(`API linting failed for ${failedLints.length} API(s)`);
+      }
+    } else if (runLint && results.length === 0) {
+      core.info('Linting skipped: no API changes detected');
+    }
+    
+    // Set lint results output
+    core.setOutput('lint-results', JSON.stringify(lintResults, null, 2));
+    
     // Log results
     if (results.length > 0) {
       core.info(`Found ${results.length} API file changes:`);
       if (outputFormat === 'github') {
         core.startGroup('API Changes Found');
         for (const result of results) {
-          core.info(`📄 ${result.filePath} (API: ${result.apiId}, Root: ${result.isRootFile})`);
+          core.info(`📄 API: ${result.apiId}, Root: ${result.rootFile}, Files: ${result.changedFiles.join(', ')}`);
         }
         core.endGroup();
+        
+        if (lintResults.length > 0) {
+          core.startGroup('Linting Results');
+          for (const lintResult of lintResults) {
+            const status = lintResult.success ? '✅' : '❌';
+            core.info(`${status} ${lintResult.apiId}: ${lintResult.success ? 'Passed' : lintResult.error}`);
+          }
+          core.endGroup();
+        }
       } else {
         core.info(jsonOutput);
+        if (lintResults.length > 0) {
+          core.info('Lint results:');
+          core.info(JSON.stringify(lintResults, null, 2));
+        }
       }
     } else {
       core.info('No API file changes found');

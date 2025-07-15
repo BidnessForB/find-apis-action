@@ -1,5 +1,5 @@
-name: 'Find API Changes'
-description: 'Find files that have changed and match API definitions in .postman directory'
+name: 'Find and Lint API Changes'
+description: 'Find files that have changed and match API definitions in .postman directory, optionally lint them with Postman CLI'
 author: 'GitHub Copilot'
 
 inputs:
@@ -11,10 +11,10 @@ inputs:
     description: 'Base reference for comparison'
     required: false
     default: 'HEAD~1'
-  output-format:
-    description: 'Output format (json or github)'
+  run-lint:
+    description: 'Whether to run API linting after detecting changes'
     required: false
-    default: 'github'
+    default: 'true'
 
 outputs:
   api-changes:
@@ -23,6 +23,9 @@ outputs:
   has-changes:
     description: 'Whether any API changes were found'
     value: ${{ steps.find-changes.outputs.has-changes }}
+  lint-results:
+    description: 'Results of API linting (if run-lint is enabled)'
+    value: ${{ steps.find-changes.outputs.lint-results }}
 
 runs:
   using: 'node20'

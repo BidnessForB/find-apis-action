@@ -1,0 +1,52 @@
+name: Simple Find and Lint APIs
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '**.yaml'
+      - '**.yml'
+
+jobs:
+  find-and-lint-apis:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm install
+    
+    # Using the action with linting enabled
+    - name: Find and lint API changes
+      id: find-and-lint
+      uses: ./
+      with:
+        postman-directory: '.postman'
+        base-ref: 'HEAD~1'
+        run-lint: 'true'
+      env:
+        POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+    
+    - name: Show results
+      run: |
+        if [ "${{ steps.find-and-lint.outputs.has-changes }}" == "true" ]; then
+          echo "API changes detected!"
+          echo '${{ steps.find-and-lint.outputs.api-changes }}' | jq '.'
+          
+          if [ "${{ steps.find-and-lint.outputs.lint-results }}" != "[]" ]; then
+            echo "Lint results:"
+            echo '${{ steps.find-and-lint.outputs.lint-results }}' | jq '.'
+          fi
+        else
+          echo "No API changes detected"
+        fi
