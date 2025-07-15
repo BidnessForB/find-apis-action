@@ -28138,7 +28138,7 @@ async function run() {
     
     const postmanApiKey = process.env.POSTMAN_API_KEY;
     
-    core.info(`run-lint: $core.getInput('run-lint')`);  
+    core.info(`run-lint: ${core.getInput('run-lint')}`);  
     core.info(`runLint: ${runLint}`);
     core.info(`Searching for API changes in ${postmanDir}`);
     core.info(`Comparing against ${baseRef}`);
