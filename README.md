@@ -60,12 +60,14 @@ The action outputs a JSON array with the following structure:
   {
     "apiId": "11ad5c34-13c2-43b7-a492-2bb349751285",
     "rootFile": "accounts.yaml",
-    "changedFiles": ["accounts.yaml"]
+    "changedFiles": ["accounts.yaml"],
+    "integrationId": "179207"
   },
   {
     "apiId": "edd4253d-c264-4a49-b39b-d19fd52e49d4",
     "rootFile": "bar.yaml",
-    "changedFiles": ["bar.yaml", "bar-schemas.yaml"]
+    "changedFiles": ["bar.yaml", "bar-schemas.yaml"],
+    "integrationId": "179208"
   }
 ]
 ```
@@ -74,6 +76,7 @@ Where:
 - `apiId`: The ID of the API from the config section
 - `rootFile`: The primary root file for the API (first one if multiple exist)
 - `changedFiles`: Array of all files that changed and are part of this API
+- `integrationId`: The integration ID looked up from `integration-ids.csv`, or `null` if not found
 
 Note: There is one array element per modified API, not per changed file.
 
@@ -92,6 +95,20 @@ files[] = {"path":"accounts.yaml","metaData":{}}
 type = openapi:3
 rootFiles[] = accounts.yaml
 ```
+
+## Integration IDs CSV File
+
+The action looks for an `integration-ids.csv` file in the root directory to map API IDs to integration IDs. The CSV format should be:
+
+```csv
+api-id, integration-id
+11ad5c34-13c2-43b7-a492-2bb349751285,179207
+edd4253d-c264-4a49-b39b-d19fd52e49d4,179208
+```
+
+- If the CSV file doesn't exist, `integrationId` will be `null` for all APIs
+- If an API ID is not found in the CSV, `integrationId` will be `null` for that API
+- The CSV file should have a header row with `api-id, integration-id`
 
 ## Development
 

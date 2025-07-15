@@ -29,8 +29,40 @@ function getChangedFiles() {
 }
 
 /**
- * Get all API definition files from .postman directory
+ * Load integration ID mappings from CSV file
  */
+function loadIntegrationMappings() {
+  const csvPath = 'integration-ids.csv';
+  const mappings = new Map();
+  
+  try {
+    if (!fs.existsSync(csvPath)) {
+      console.log('integration-ids.csv file not found');
+      return mappings;
+    }
+    
+    const csvContent = fs.readFileSync(csvPath, 'utf8');
+    const lines = csvContent.trim().split('\n');
+    
+    // Skip header row if present
+    const dataLines = lines.slice(1);
+    
+    for (const line of dataLines) {
+      if (line.trim()) {
+        const [apiId, integrationId] = line.split(',').map(col => col.trim());
+        if (apiId && integrationId) {
+          mappings.set(apiId, integrationId);
+        }
+      }
+    }
+    
+    console.log(`Loaded ${mappings.size} integration ID mappings from CSV`);
+  } catch (error) {
+    console.error('Error loading integration-ids.csv:', error.message);
+  }
+  
+  return mappings;
+}
 function getApiFiles() {
   const postmanDir = '.postman';
   const apiFiles = [];
@@ -106,6 +138,7 @@ function parseApiFile(filePath) {
 function findApiChanges() {
   const changedFiles = getChangedFiles();
   const apiFiles = getApiFiles();
+  const integrationMappings = loadIntegrationMappings();
   const results = [];
   
   console.log(`Found ${changedFiles.length} changed files`);
@@ -150,10 +183,14 @@ function findApiChanges() {
       // Get the root file (first one if multiple exist)
       const rootFile = apiData.rootFiles.length > 0 ? apiData.rootFiles[0] : null;
       
+      // Look up integration ID
+      const integrationId = integrationMappings.get(apiData.apiId) || null;
+      
       results.push({
         apiId: apiData.apiId,
         rootFile: rootFile,
-        changedFiles: apiChangedFiles
+        changedFiles: apiChangedFiles,
+        integrationId: integrationId
       });
     }
   }

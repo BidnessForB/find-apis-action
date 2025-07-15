@@ -5,6 +5,7 @@ info:
     Endpoints for frontend implementations when it comes to the account space.
     Updated bar API for testing.
     Testing new output format.
+    Testing integration ID lookup.
 
     Add some new documentation 
 
