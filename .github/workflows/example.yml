@@ -21,7 +21,7 @@ jobs:
     
     - name: Find API changes
       id: find-apis
-      # Replace 'your-org/find-apis-action@v1' with the actual location of this action
+      # Replace 'your-org/lint-modified-apis@v1' with the actual location of this action
       uses: ./  # Use this for local testing
   
   notify-api-changes:

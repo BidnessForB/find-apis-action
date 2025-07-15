@@ -1,5 +1,5 @@
 {
-  "name": "find-apis-action",
+  "name": "lint-modified-apis",
   "version": "1.0.0",
   "description": "GitHub Action to find changed files matching API definitions in .postman directory",
   "main": "action.js",

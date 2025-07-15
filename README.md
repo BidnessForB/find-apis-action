@@ -16,7 +16,7 @@ A GitHub Action that finds files in the current commit which have changed since 
 
 ```yaml
 - name: Find API Changes
-  uses: bidnessforb/find-apis-action@v1
+  uses: bidnessforb/lint-modified-apis@v1
   id: api-changes
   with:
     postman-directory: '.postman'  # Optional, defaults to '.postman'
