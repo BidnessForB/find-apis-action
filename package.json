@@ -4,7 +4,8 @@
   "description": "GitHub Action to find changed files matching API definitions in .postman directory",
   "main": "action.js",
   "scripts": {
-    "find-api-changes": "node .github/scripts/find-api-changes.js"
+    "find-api-changes": "node .github/scripts/find-api-changes.js",
+    "build": "ncc build action.js -o dist"
   },
   "keywords": [
     "github-action",
@@ -21,5 +22,12 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "@eslint/json": "^0.13.0",
+    "@eslint/markdown": "^7.0.0",
+    "eslint": "^9.31.0",
+    "globals": "^16.3.0"
   }
 }
