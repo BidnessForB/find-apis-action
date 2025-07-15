@@ -196,7 +196,7 @@ async function loginToPostman(apiKey) {
 /**
  * Lint a single API
  */
-async function lintApi(apiId, integrationId = null) {
+async function lintApi(apiId, schemaFilePath, integrationId = null) {
   try {
     let output = '';
     let errorOutput = '';
@@ -223,6 +223,7 @@ async function lintApi(apiId, integrationId = null) {
     
     return {
       apiId,
+      schemaFilePath,
       integrationId,
       success: exitCode === 0,
       output: output.trim(),
@@ -231,6 +232,7 @@ async function lintApi(apiId, integrationId = null) {
   } catch (error) {
     return {
       apiId,
+      schemaFilePath,
       integrationId,
       success: false,
       output: '',
@@ -257,13 +259,13 @@ async function runApiLinting(apiChanges, postmanApiKey) {
   const lintResults = [];
   
   for (const apiChange of apiChanges) {
-    const result = await lintApi(apiChange.apiId, apiChange.integrationId);
+    const result = await lintApi(apiChange.apiId, apiChange.schemaFilePath, apiChange.integrationId);
     lintResults.push(result);
     
     if (result.success) {
-      core.info(`✅ API ${result.apiId} linting passed`);
+      core.info(`✅ ${result.schemaFilePath} (${result.apiId}) linting passed`);
     } else {
-      core.error(`❌ API ${result.apiId} linting failed: ${result.error}`);
+      core.error(`❌ ${result.schemaFilePath} (${result.apiId}) linting failed: ${result.error}`);
     }
   }
   
@@ -331,6 +333,7 @@ async function findApiChanges(postmanDir, baseRef) {
       
       results.push({
         apiId: apiData.apiId,
+        schemaFilePath: rootFile,
         rootFile: rootFile,
         changedFiles: apiChangedFiles,
         integrationId: integrationId
