@@ -83,7 +83,7 @@ jobs:
         
         if [ "${{ matrix.integrationId }}" != "null" ] && [ -n "${{ matrix.integrationId }}" ]; then
           echo "Running: postman api lint ${{ matrix.apiId }} --integration-id ${{ matrix.integrationId }}"
-          postman api lint "${{ matrix.apiId }}" --integration-id "${{ matrix.integrationId }}"
+          postman api lint "${{ matrix.apiId }}" --integration-id "${{ matrix.integrationId }}-${{ github.run_id }}"
           
         else
           echo "Running: postman api lint ${{ matrix.apiId }}"
