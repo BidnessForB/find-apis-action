@@ -1,46 +1,28 @@
-const core = require('@actions/core');
-const exec = require('@actions/exec');
+#!/usr/bin/env node
+
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 // Import the INI parser from the bin directory
-const iniParser = require('./src/iniFileParser');
+const iniParser = require('./../src/iniFileParser');
 
 /**
- * Get the list of changed files between commits
+ * Get the list of changed files between current commit and previous commit
  */
-async function getChangedFiles(baseRef = 'HEAD~1') {
+function getChangedFiles() {
   try {
-    let output = '';
-    const options = {
-      listeners: {
-        stdout: (data) => {
-          output += data.toString();
-        }
-      },
-      silent: true
-    };
-    
-    await exec.exec('git', ['diff', '--name-only', baseRef, 'HEAD'], options);
+    // Get changed files in the current commit
+    const output = execSync('git diff --name-only HEAD~1 HEAD', { encoding: 'utf8' });
     return output.trim().split('\n').filter(file => file.length > 0);
   } catch (error) {
-    core.warning(`Error getting changed files: ${error.message}`);
+    console.error('Error getting changed files:', error.message);
     // Fallback: get all modified files in working directory
     try {
-      let output = '';
-      const options = {
-        listeners: {
-          stdout: (data) => {
-            output += data.toString();
-          }
-        },
-        silent: true
-      };
-      
-      await exec.exec('git', ['diff', '--name-only', 'HEAD'], options);
+      const output = execSync('git diff --name-only HEAD', { encoding: 'utf8' });
       return output.trim().split('\n').filter(file => file.length > 0);
     } catch (fallbackError) {
-      core.error(`Fallback failed: ${fallbackError.message}`);
+      console.error('Fallback failed:', fallbackError.message);
       return [];
     }
   }
@@ -55,7 +37,7 @@ function loadIntegrationMappings() {
   
   try {
     if (!fs.existsSync(csvPath)) {
-      core.info('integration-ids.csv file not found');
+      console.log('integration-ids.csv file not found');
       return mappings;
     }
     
@@ -74,18 +56,19 @@ function loadIntegrationMappings() {
       }
     }
     
-    core.info(`Loaded ${mappings.size} integration ID mappings from CSV`);
+    console.log(`Loaded ${mappings.size} integration ID mappings from CSV`);
   } catch (error) {
-    core.error('Error loading integration-ids.csv: ' + error.message);
+    console.error('Error loading integration-ids.csv:', error.message);
   }
   
   return mappings;
 }
-function getApiFiles(postmanDir) {
+function getApiFiles() {
+  const postmanDir = '.postman';
   const apiFiles = [];
   
   if (!fs.existsSync(postmanDir)) {
-    core.info(`No ${postmanDir} directory found`);
+    console.log('No .postman directory found');
     return apiFiles;
   }
   
@@ -116,7 +99,7 @@ function parseApiFile(filePath) {
     const apiDefinition = parsed.config?.relations?.apiDefinition;
     
     if (!apiId || !apiDefinition) {
-      core.info(`Skipping ${filePath}: missing required sections`);
+      console.log(`Skipping ${filePath}: missing required sections`);
       return null;
     }
     
@@ -144,7 +127,7 @@ function parseApiFile(filePath) {
       rootFiles: Array.isArray(rootFiles) ? rootFiles : []
     };
   } catch (error) {
-    core.error(`Error parsing ${filePath}: ${error.message}`);
+    console.error(`Error parsing ${filePath}:`, error.message);
     return null;
   }
 }
@@ -152,17 +135,17 @@ function parseApiFile(filePath) {
 /**
  * Main function to find API changes
  */
-async function findApiChanges(postmanDir, baseRef) {
-  const changedFiles = await getChangedFiles(baseRef);
-  const apiFiles = getApiFiles(postmanDir);
+function findApiChanges() {
+  const changedFiles = getChangedFiles();
+  const apiFiles = getApiFiles();
   const integrationMappings = loadIntegrationMappings();
   const results = [];
   
-  core.info(`Found ${changedFiles.length} changed files`);
-  core.info(`Found ${apiFiles.length} API definition files`);
+  console.log(`Found ${changedFiles.length} changed files`);
+  console.log(`Found ${apiFiles.length} API definition files`);
   
   if (changedFiles.length === 0) {
-    core.info('No changed files found');
+    console.log('No changed files found');
     return results;
   }
   
@@ -173,7 +156,7 @@ async function findApiChanges(postmanDir, baseRef) {
       continue;
     }
     
-    core.info(`Processing API ${apiData.apiId} with ${apiData.filePaths.length} defined files`);
+    console.log(`Processing API ${apiData.apiId} with ${apiData.filePaths.length} defined files`);
     
     const apiChangedFiles = [];
     
@@ -189,7 +172,7 @@ async function findApiChanges(postmanDir, baseRef) {
           // Avoid duplicates
           if (!apiChangedFiles.includes(changedFile)) {
             apiChangedFiles.push(changedFile);
-            core.info(`Match found: ${changedFile} for API ${apiData.apiId}`);
+            console.log(`Match found: ${changedFile} for API ${apiData.apiId}`);
           }
         }
       }
@@ -215,47 +198,28 @@ async function findApiChanges(postmanDir, baseRef) {
   return results;
 }
 
-/**
- * Main execution
- */
-async function run() {
-  try {
-    // Get inputs
-    const postmanDir = core.getInput('postman-directory') || '.postman';
-    const baseRef = core.getInput('base-ref') || 'HEAD~1';
-    const outputFormat = 'json';
-    
-    core.info(`Searching for API changes in ${postmanDir}`);
-    core.info(`Comparing against ${baseRef}`);
-    
-    // Find API changes
-    const results = await findApiChanges(postmanDir, baseRef);
-    const jsonOutput = JSON.stringify(results, null, 2);
-    
-    // Set outputs
-    core.setOutput('api-changes', jsonOutput);
-    core.setOutput('has-changes', results.length > 0 ? 'true' : 'false');
-    
-    // Log results
-    if (results.length > 0) {
-      core.info(`Found ${results.length} API file changes:`);
-      if (outputFormat === 'github') {
-        core.startGroup('API Changes Found');
-        for (const result of results) {
-          core.info(`📄 ${result.filePath} (API: ${result.apiId}, Root: ${result.isRootFile})`);
-        }
-        core.endGroup();
-      } else {
-        core.info(jsonOutput);
-      }
-    } else {
-      core.info('No API file changes found');
+// Main execution
+try {
+  const results = findApiChanges();
+  const jsonOutput = JSON.stringify(results, null, 2);
+  
+  console.log('\n=== RESULTS ===');
+  console.log(jsonOutput);
+  
+  // Set GitHub Actions output
+  if (process.env.GITHUB_ACTIONS) {
+    const fs = require('fs');
+    const outputFile = process.env.GITHUB_OUTPUT;
+    if (outputFile) {
+      // Escape newlines for GitHub Actions output
+      const escapedJson = jsonOutput.replace(/\n/g, '%0A').replace(/\r/g, '%0D');
+      fs.appendFileSync(outputFile, `api-changes=${escapedJson}\n`);
     }
-    
-  } catch (error) {
-    core.setFailed(`Action failed: ${error.message}`);
   }
+  
+  // Exit with success
+  process.exit(0);
+} catch (error) {
+  console.error('Script failed:', error.message);
+  process.exit(1);
 }
-
-// Run the action
-run();
