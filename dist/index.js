@@ -28160,8 +28160,8 @@ async function run() {
       const failedLints = lintResults.filter(r => !r.success);
       if (failedLints.length > 0) {
         core.warning(`${failedLints.length} API(s) failed linting`);
-        // Optionally set as failed if you want the action to fail on lint errors
-        // core.setFailed(`API linting failed for ${failedLints.length} API(s)`);
+        // Fail the action if any linting failed
+        core.setFailed(`API linting failed for ${failedLints.length} API(s)`);
       }
     } else if (runLint && results.length === 0) {
       core.info('Linting skipped: no API changes detected');
