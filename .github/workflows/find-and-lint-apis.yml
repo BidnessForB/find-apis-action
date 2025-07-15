@@ -1,18 +1,13 @@
-name: Simple Find and Lint APIs
+name: Find and Lint APIs
 
 on:
   workflow_dispatch:
     inputs:
       run-lint:
         description: 'Whether to run API linting after detecting changes'
-        required: false
+        required: true
         default: true
         type: boolean
-      base-ref:
-        description: 'Base reference for comparison'
-        required: false
-        default: 'HEAD~1'
-        type: string
   push:
     paths:
       - '**.yaml'
@@ -28,23 +23,18 @@ jobs:
       with:
         fetch-depth: 2
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
+    - name: Check inputs
+      run: |
+        echo "Event Inputs: ${{ toJson(github.event.inputs) }}"
+        echo "Inputs: ${{ inputs.run-lint }}"
     
-    - name: Install dependencies
-      run: npm install
     
     # Using the action with linting enabled
-    - name: Find and lint API changes
+    - name: Find and lint modified APIs 
       id: find-and-lint
-      uses: ./
+      uses: bidnessforb/lint-modified-apis@add-linting
       with:
-        postman-directory: '.postman'
-        base-ref: ${{ inputs.base-ref || 'HEAD~1' }}
-        run-lint: ${{ inputs.run-lint }}
+        run-lint: ${{ inputs.run-lint || 'true' }}
       env:
         POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
     
