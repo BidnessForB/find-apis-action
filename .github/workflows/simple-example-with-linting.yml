@@ -74,10 +74,12 @@ jobs:
         echo "Integration ID: ${{ matrix.integrationId }}"
         echo "Working dir:"
         pwd
+        ls accounts.yaml
         
         if [ "${{ matrix.integrationId }}" != "null" ] && [ -n "${{ matrix.integrationId }}" ]; then
           echo "Running: postman api lint ${{ matrix.apiId }} --integration-id ${{ matrix.integrationId }}"
           postman api lint "${{ matrix.apiId }}" --integration-id "${{ matrix.integrationId }}"
+          
         else
           echo "Running: postman api lint ${{ matrix.apiId }}"
           postman api lint "${{ matrix.apiId }}"
