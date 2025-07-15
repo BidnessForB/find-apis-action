@@ -21,7 +21,7 @@ A GitHub Action that finds files in the current commit which have changed since 
   with:
     postman-directory: '.postman'  # Optional, defaults to '.postman'
     base-ref: 'HEAD~1'             # Optional, defaults to 'HEAD~1'
-    output-format: 'json'          # Optional, 'json' or 'github'
+    output-format: 'json'          # Optional, defaults to 'github'
 
 - name: Process results
   run: |
@@ -42,7 +42,7 @@ A GitHub Action that finds files in the current commit which have changed since 
 |-------|-------------|----------|---------|
 | `postman-directory` | Directory containing Postman API files | No | `.postman` |
 | `base-ref` | Base reference for comparison | No | `HEAD~1` |
-| `output-format` | Output format (`json` or `github`) | No | `json` |
+| `output-format` | Output format (`json` or `github`) | No | `github` |
 
 ## Outputs
 

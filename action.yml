@@ -14,7 +14,7 @@ inputs:
   output-format:
     description: 'Output format (json or github)'
     required: false
-    default: 'json'
+    default: 'github'
 
 outputs:
   api-changes:
