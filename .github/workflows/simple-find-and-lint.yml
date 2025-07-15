@@ -2,6 +2,17 @@ name: Simple Find and Lint APIs
 
 on:
   workflow_dispatch:
+    inputs:
+      run-lint:
+        description: 'Whether to run API linting after detecting changes'
+        required: false
+        default: true
+        type: boolean
+      base-ref:
+        description: 'Base reference for comparison'
+        required: false
+        default: 'HEAD~1'
+        type: string
   push:
     paths:
       - '**.yaml'
@@ -32,8 +43,8 @@ jobs:
       uses: ./
       with:
         postman-directory: '.postman'
-        base-ref: 'HEAD~1'
-        run-lint: 'true'
+        base-ref: ${{ inputs.base-ref || 'HEAD~1' }}
+        run-lint: ${{ inputs.run-lint || 'true' }}
       env:
         POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
     
