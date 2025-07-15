@@ -354,8 +354,10 @@ async function run() {
     const baseRef = core.getInput('base-ref') || 'HEAD~1';
     const outputFormat = 'json';
     const runLint = core.getInput('run-lint') === 'true';
+    
     const postmanApiKey = process.env.POSTMAN_API_KEY;
     
+    core.info(`runLint: ${runLint}`);
     core.info(`Searching for API changes in ${postmanDir}`);
     core.info(`Comparing against ${baseRef}`);
     
