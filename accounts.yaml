@@ -1,4 +1,6 @@
 openapi: 3.0.3
+tags:   
+  $ref: ./tags.yaml
 info:
   title: Retail Accounts API thing
   description: >-
