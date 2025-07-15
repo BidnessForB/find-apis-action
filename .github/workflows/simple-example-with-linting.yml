@@ -72,6 +72,8 @@ jobs:
         echo "Linting API: ${{ matrix.apiId }}"
         echo "Root file: ${{ matrix.rootFile }}"
         echo "Integration ID: ${{ matrix.integrationId }}"
+        echo "Working dir:"
+        pwd
         
         if [ "${{ matrix.integrationId }}" != "null" ] && [ -n "${{ matrix.integrationId }}" ]; then
           echo "Running: postman api lint ${{ matrix.apiId }} --integration-id ${{ matrix.integrationId }}"
