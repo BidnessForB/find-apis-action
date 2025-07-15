@@ -4,6 +4,8 @@
   description: "User related services (authentication, settings, device managment, etc.). Auth can be exchanged with Firebase Auth or SSO services."
 - name: Blog
   description: "Blog related endpoints, posts and comments"
+- name: Statement
+  description: "Statement Stuff"
 - name: Media
   description: "Media service, providing all media resources"
 - name: Health

@@ -683,5 +683,3 @@ components:
       type: apiKey
       name: x-api-key
       in: header
-tags:
-  - name: Statement
