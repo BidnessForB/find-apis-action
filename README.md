@@ -1,13 +1,12 @@
 # Find APIs Action
 
-A GitHub Action that finds files in the current commit which have changed since the previous commit and whose paths match any of the paths listed in the files property of the `[config.relations.apiDefinition]` section of API files in the `.postman` directory.
+A GitHub Action that finds files in the current commit which have changed since the previous commit and which are parts of APIs which have been integrated with GitHub in Postman.
 
 ## Features
 
 - Detects changed files between commits
-- Parses Postman API definition files in INI format
 - Matches changed files against API-defined file paths
-- Outputs JSON array with API ID, file path, and root file status
+- Outputs JSON array with API ID, root file path, and an array of any changed file paths that are part of the API (for multi-file APIs)
 - Can be used as a reusable action or standalone workflow
 
 ## Usage
@@ -16,7 +15,7 @@ A GitHub Action that finds files in the current commit which have changed since 
 
 ```yaml
 - name: Find API Changes
-  uses: ./
+  uses: bidnessforb/find-apis-action@main
   id: api-changes
   with:
     postman-directory: '.postman'  # Optional, defaults to '.postman'
@@ -42,7 +41,7 @@ A GitHub Action that finds files in the current commit which have changed since 
 |-------|-------------|----------|---------|
 | `postman-directory` | Directory containing Postman API files | No | `.postman` |
 | `base-ref` | Base reference for comparison | No | `HEAD~1` |
-| `output-format` | Output format (`json` or `github`) | No | `github` |
+| `output-format` | Output format (`json` or `github`) | No | `json` |
 
 ## Outputs
 
@@ -73,7 +72,7 @@ The action outputs a JSON array with the following structure:
 ```
 
 Where:
-- `apiId`: The ID of the API from the config section
+- `apiId`: The ID of the API from the config section of the relevant `api_` file in the `postman` directory.
 - `rootFile`: The primary root file for the API (first one if multiple exist)
 - `changedFiles`: Array of all files that changed and are part of this API
 - `integrationId`: The integration ID looked up from `integration-ids.csv`, or `null` if not found
