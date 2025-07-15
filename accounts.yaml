@@ -1,9 +1,11 @@
 openapi: 3.0.3
 info:
-  title: Retail Accounts API 
+  title: Retail Accounts API thing
   description: >-
     Endpoints for frontend implementations when it comes to the account space.
-    Updated for testing API change detection.
+    Updated bar API for testing.
+    Testing new output format.
+    Testing integration ID lookup.
 
     Add some new documentation 
 
@@ -29,9 +31,6 @@ info:
 
 
     <img src="https://i.imgur.com/zQq3VNF.jpg" alt="Imgur">
-    
-    Testing the new output format with changedFiles array.
-    Adding another line to test multiple file changes.
   version: 1.0.0
   contact: {}
   
@@ -653,7 +652,6 @@ paths:
 components:
   schemas: 
     accountInfo:
-      description: The desc
       type: object
       properties:
         details:
@@ -685,4 +683,3 @@ components:
       in: header
 tags:
   - name: Statement
-Testing final integration...
