@@ -32,12 +32,10 @@ jobs:
       uses: ./
     
     - name: Show results
-      if: steps.api-changes.outputs.has-changes == 'true'
       run: |
-        echo "API changes detected!"
-        echo '${{ steps.api-changes.outputs.api-changes }}' | jq '.'
-    
-    - name: No changes message
-      if: steps.api-changes.outputs.has-changes == 'false'
-      run: |
-        echo "No API changes detected"
+        if [ "${{ steps.api-changes.outputs.has-changes }}" == "true" ]; then
+          echo "API changes detected!"
+          echo '${{ steps.api-changes.outputs.api-changes }}' | jq '.'
+        else
+          echo "No API changes detected"
+        fi
