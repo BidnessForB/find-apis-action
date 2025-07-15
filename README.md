@@ -1,13 +1,12 @@
 # Find APIs Action
 
-A GitHub Action that finds files in the current commit which have changed since the previous commit and whose paths match any of the paths listed in the files property of the `[config.relations.apiDefinition]` section of API files in the `.postman` directory.
+Finds files in the current commit which are part of an API managed by Postman.
 
 ## Features
 
 - Detects changed files between commits
-- Parses Postman API definition files in INI format
-- Matches changed files against API-defined file paths
-- Outputs JSON array with API ID, file path, and root file status
+- Matches changed files against files managed by Postman in the `.postman` directory
+- Outputs JSON array with API ID, root file path, and for multi-file APIs an array of any additional files which have changed and are part of the API.
 - Can be used as a reusable action or standalone workflow
 
 ## Usage
@@ -16,12 +15,12 @@ A GitHub Action that finds files in the current commit which have changed since 
 
 ```yaml
 - name: Find API Changes
-  uses: ./
+  uses: bidnessforb/find-apis-action@v1
   id: api-changes
   with:
     postman-directory: '.postman'  # Optional, defaults to '.postman'
     base-ref: 'HEAD~1'             # Optional, defaults to 'HEAD~1'
-    output-format: 'json'          # Optional, defaults to 'github'
+    output-format: 'json'          # Optional, defaults to 'json'
 
 - name: Process results
   run: |
@@ -29,7 +28,7 @@ A GitHub Action that finds files in the current commit which have changed since 
     echo "Changes: ${{ steps.api-changes.outputs.api-changes }}"
 ```
 
-### As a Workflow Step foo
+### As a Workflow Step
 
 ```yaml
 - name: Find API changes
@@ -42,7 +41,7 @@ A GitHub Action that finds files in the current commit which have changed since 
 |-------|-------------|----------|---------|
 | `postman-directory` | Directory containing Postman API files | No | `.postman` |
 | `base-ref` | Base reference for comparison | No | `HEAD~1` |
-| `output-format` | Output format (`json` or `github`) | No | `github` |
+| `output-format` | Output format (`json` or `github`) | No | `json` |
 
 ## Outputs
 
