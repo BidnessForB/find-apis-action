@@ -1,4 +1,4 @@
-name: Simple API Change Detection with Linting
+name: Find and lint modified APIs
 
 on:
   workflow_dispatch:
@@ -58,6 +58,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJson(needs.detect-changes.outputs.matrix-data) }}
+      fail-fast: false
+    
     name: Lint API ${{ matrix.rootFile }} - ${{ matrix.apiId }}
     
     steps:
