@@ -28135,7 +28135,7 @@ async function run() {
     const baseRef = core.getInput('base-ref') || 'HEAD~1';
     const outputFormat = 'json';
     //const runLint = core.getInput('run-lint') === 'true';
-    const runLint = core.getBooleanInput('run-lint');
+    const runLint = core.getBooleanInput('run-lint') === true;
     //core.info(`run-lint: ${core.getBooleanInput('run-lint')}`);
     core.info(`runLint: ${runLint}`);
     
