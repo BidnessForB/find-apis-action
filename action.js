@@ -223,7 +223,7 @@ async function run() {
     // Get inputs
     const postmanDir = core.getInput('postman-directory') || '.postman';
     const baseRef = core.getInput('base-ref') || 'HEAD~1';
-    const outputFormat = core.getInput('output-format') || 'json';
+    const outputFormat = 'json';
     
     core.info(`Searching for API changes in ${postmanDir}`);
     core.info(`Comparing against ${baseRef}`);
