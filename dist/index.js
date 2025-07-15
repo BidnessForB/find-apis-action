@@ -28135,9 +28135,10 @@ async function run() {
     const baseRef = core.getInput('base-ref') || 'HEAD~1';
     const outputFormat = 'json';
     //const runLint = core.getInput('run-lint') === 'true';
-    const runLint = core.getInput('run-lint');
-    core.info(`run-lint: ${core.getInput('run-lint')}`);
+    const runLint = core.getBooleanInput('run-lint');
+    //core.info(`run-lint: ${core.getBooleanInput('run-lint')}`);
     core.info(`runLint: ${runLint}`);
+    
     
     const postmanApiKey = process.env.POSTMAN_API_KEY;
     
