@@ -2,7 +2,7 @@ openapi: 3.0.3
 tags:   
   $ref: ./tags.yaml
 info:
-  title: Retail Accounts API
+  title: Retail Accounts API thing
   description: >-
     Endpoints for frontend implementations when it comes to the account space.
     Updated bar API for testing.
