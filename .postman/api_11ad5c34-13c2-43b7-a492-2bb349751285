@@ -14,6 +14,7 @@ rootDirectory = accounts/collections
 
 [config.relations.apiDefinition]
 files[] = {"path":"accounts.yaml","metaData":{}}
+files[] = {"path":"accounts-schemas.yaml","metaData":{}}
 
 [config.relations.apiDefinition.metaData]
 type = openapi:3

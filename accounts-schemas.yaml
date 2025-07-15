@@ -1,0 +1,36 @@
+components:
+  schemas:
+    Account:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Account identifier
+        balance:
+          type: number
+          description: Current account balance
+        type:
+          type: string
+          enum: [checking, savings, credit]
+          description: Type of account
+    
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Transaction ID
+        amount:
+          type: number
+          description: Transaction amount
+        date:
+          type: string
+          format: date-time
+          description: Transaction date and time
+        description:
+          type: string
+          description: Transaction description
+        type:
+          type: string
+          enum: [deposit, withdrawal, payment, invoice]
+          description: Type of transaction
