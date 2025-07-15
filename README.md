@@ -1,6 +1,7 @@
 # Find APIs Action
 
-Finds files in the current commit which are part of an API managed by Postman.
+
+A GitHub Action that finds files in the current commit which have changed since the previous commit and which are parts of APIs which have been integrated with GitHub in Postman.
 
 ## Features
 
@@ -72,7 +73,7 @@ The action outputs a JSON array with the following structure:
 ```
 
 Where:
-- `apiId`: The ID of the API from the config section
+- `apiId`: The ID of the API from the config section of the relevant `api_` file in the `postman` directory.
 - `rootFile`: The primary root file for the API (first one if multiple exist)
 - `changedFiles`: Array of all files that changed and are part of this API
 - `integrationId`: The integration ID looked up from `integration-ids.csv`, or `null` if not found
