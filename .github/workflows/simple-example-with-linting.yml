@@ -61,6 +61,9 @@ jobs:
     name: Lint API ${{ matrix.rootFile }} - ${{ matrix.apiId }}
     
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
     - name: Install Postman CLI
       run: |
         curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
@@ -74,7 +77,7 @@ jobs:
         echo "Integration ID: ${{ matrix.integrationId }}"
         echo "Working dir:"
         pwd
-        ls accounts.yaml
+        ls -la
         
         if [ "${{ matrix.integrationId }}" != "null" ] && [ -n "${{ matrix.integrationId }}" ]; then
           echo "Running: postman api lint ${{ matrix.apiId }} --integration-id ${{ matrix.integrationId }}"
