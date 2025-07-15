@@ -4,7 +4,7 @@
   "description": "GitHub Action to find changed files matching API definitions in .postman directory",
   "main": "action.js",
   "scripts": {
-    "test": "node test.js",
+    "test": "node ./test/test.js",
     "find-api-changes": "node .github/scripts/find-api-changes.js"
   },
   "keywords": [
