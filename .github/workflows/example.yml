@@ -56,10 +56,12 @@ jobs:
         echo '${{ needs.detect-api-changes.outputs.api-changes }}' | jq -c '.[]' | while read api; do
           apiId=$(echo "$api" | jq -r '.apiId')
           rootFile=$(echo "$api" | jq -r '.rootFile')
+          integrationId=$(echo "$api" | jq -r '.integrationId')
           changedFiles=$(echo "$api" | jq -r '.changedFiles[]')
           
           echo "Validating API $apiId..."
           echo "  Root file: $rootFile"
+          echo "  Integration ID: $integrationId"
           echo "  Changed files:"
           
           for file in $changedFiles; do
@@ -67,4 +69,11 @@ jobs:
             # Add your validation logic here
             # For example: OpenAPI validation, schema checks, etc.
           done
+          
+          # Example: Use integration ID for deployment or notification
+          if [ "$integrationId" != "null" ]; then
+            echo "  → Triggering deployment for integration $integrationId"
+          else
+            echo "  → No integration ID found, skipping deployment"
+          fi
         done
