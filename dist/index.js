@@ -28134,18 +28134,12 @@ async function run() {
     const postmanDir = core.getInput('postman-directory') || '.postman';
     const baseRef = core.getInput('base-ref') || 'HEAD~1';
     const outputFormat = 'json';
-    //const runLint = core.getInput('run-lint') === 'true';
-    const runLint = core.getBooleanInput('run-lint') === true;
-    core.info(`run-lint: ${core.getBooleanInput('run-lint')}`);
-    core.info(`runLint: ${runLint}`);
-    
-    
+    const runLint = core.getBooleanInput('run-lint');
     const postmanApiKey = process.env.POSTMAN_API_KEY;
     
-    core.info(`run-lint: ${core.getInput('run-lint')}`);  
-    core.info(`runLint: ${runLint}`);
     core.info(`Searching for API changes in ${postmanDir}`);
     core.info(`Comparing against ${baseRef}`);
+    core.info(`Linting enabled: ${runLint}`);
     
     // Find API changes
     const results = await findApiChanges(postmanDir, baseRef);

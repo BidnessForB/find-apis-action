@@ -44,7 +44,7 @@ jobs:
       with:
         postman-directory: '.postman'
         base-ref: ${{ inputs.base-ref || 'HEAD~1' }}
-        run-lint: ${{ inputs.run-lint || 'true' }}
+        run-lint: ${{ inputs.run-lint }}
       env:
         POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
     
