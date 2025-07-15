@@ -13,6 +13,10 @@ components:
           type: string
           enum: [checking, savings, credit]
           description: Type of account
+        status:
+          type: string
+          enum: [active, inactive, frozen]
+          description: Account status
     
     Transaction:
       type: object
