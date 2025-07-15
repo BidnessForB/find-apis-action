@@ -356,6 +356,7 @@ async function run() {
     //const runLint = core.getInput('run-lint') === 'true';
     const runLint = core.getInput('run-lint');
     core.info(`run-lint: ${core.getInput('run-lint')}`);
+    core.info(`runLint: ${runLint}`);
     
     const postmanApiKey = process.env.POSTMAN_API_KEY;
     
