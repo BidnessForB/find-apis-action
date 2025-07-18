@@ -32,7 +32,7 @@ jobs:
     # Using the action with linting enabled
     - name: Find and lint modified APIs 
       id: find-and-lint
-      uses: bidnessforb/lint-modified-apis@v0.9.4
+      uses: bidnessforb/lint-modified-apis@v1.0.0
       with:
         run-lint: ${{ inputs.run-lint || 'true' }}
       env:
