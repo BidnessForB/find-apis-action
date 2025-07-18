@@ -129,17 +129,19 @@ rootFiles[] = accounts.yaml
 
 ## Integration IDs CSV File
 
-The action looks for an `integration-ids.csv` file in the root directory to map API IDs to integration IDs. The CSV format should be:
+Currently Postman requires an `integration-id` to forward linting results back to the Postman User Interface on the Test and Automation tab in API Builder.  The `integration-id` is not persisted in the Postman API index files and currently there is no API to retrieve it.  
+
+If you want results posted back to Postman you'll need to create a mapping file named `integration-ids.csv` that maps API IDs to integration IDs
+
+**NOTE:** This is completely optional, the action will still function whether the `integration-ids.csv` file exists or not, nor will an API missing from this file cause any errors.  
+
+The CSV format should be:
 
 ```csv
 api-id, integration-id
 11ad5c34-13c2-43b7-a492-2bb349751285,179207
 edd4253d-c264-4a49-b39b-d19fd52e49d4,179208
 ```
-
-- If the CSV file doesn't exist, `integrationId` will be `null` for all APIs
-- If an API ID is not found in the CSV, `integrationId` will be `null` for that API
-- The CSV file should have a header row with `api-id, integration-id`
 
 ## Development
 
@@ -154,11 +156,15 @@ edd4253d-c264-4a49-b39b-d19fd52e49d4,179208
 npm install
 ```
 
+### Build
+
+```
+npm run build
+```
+
 ### Testing Locally
 
 ```bash
-# Test the standalone script
-node .github/scripts/find-api-changes.js
 
 # Test the action (requires GitHub Actions environment)
 node action.js
