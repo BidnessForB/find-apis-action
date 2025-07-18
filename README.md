@@ -1,39 +1,20 @@
 # Find and Lint APIs Action
 
-A GitHub Action that finds files in the current commit which have changed since the previous commit and which are parts of APIs which have been integrated with GitHub in Postman. Optionally, it can also lint the detected APIs using the Postman CLI.
+A GitHub Action that finds and lints OAS files in the current commit which have changed since the previous commit and which are parts of APIs which have been integrated with GitHub in Postman. 
 
 ## Features
 
 - Detects changed files between commits
 - Matches changed files against files managed by Postman in the `.postman` directory
 - Outputs JSON array with API ID, root file path, and for multi-file APIs an array of any additional files which have changed and are part of the API
-- **NEW**: Optionally lints detected APIs using Postman CLI
-- Can be used as a reusable action or standalone workflow
+- Lints detected APIs using Postman CLI
+- **optional** Properly returns linting results to Postman (requires creation of `integration-ids.csv` which maps API IDs to Postman integration IDs.
 
-## Usage
 
-### As a Reusable Action
-
-#### Basic Usage (Detection Only)
-```yaml
-- name: Find API Changes
-  uses: bidnessforb/lint-modified-apis@v1
-  id: api-changes
-  with:
-    postman-directory: '.postman'  # Optional, defaults to '.postman'
-    base-ref: 'HEAD~1'             # Optional, defaults to 'HEAD~1'
-    output-format: 'json'          # Optional, defaults to 'json'
-
-- name: Process results
-  run: |
-    echo "Has changes: ${{ steps.api-changes.outputs.has-changes }}"
-    echo "Changes: ${{ steps.api-changes.outputs.api-changes }}"
-```
-
-#### Advanced Usage (Detection + Linting)
+#### Usage
 ```yaml
 - name: Find and Lint API Changes
-  uses: bidnessforb/lint-modified-apis@v1
+  uses: bidnessforb/lint-modified-apis@v0.9.4
   id: api-changes
   with:
     postman-directory: '.postman'  # Optional, defaults to '.postman'
@@ -49,13 +30,6 @@ A GitHub Action that finds files in the current commit which have changed since 
     echo "Lint results: ${{ steps.api-changes.outputs.lint-results }}"
 ```
 
-### As a Workflow Step
-
-```yaml
-- name: Find API changes
-  run: node .github/scripts/find-api-changes.js
-```
-
 ## Inputs
 
 | Input | Description | Required | Default |
@@ -63,13 +37,12 @@ A GitHub Action that finds files in the current commit which have changed since 
 | `postman-directory` | Directory containing Postman API files | No | `.postman` |
 | `base-ref` | Base reference for comparison | No | `HEAD~1` |
 | `output-format` | Output format (`json` or `github`) | No | `json` |
-| `run-lint` | Whether to run API linting after detecting changes | No | `false` |
 
 ## Environment Variables
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `POSTMAN_API_KEY` | Postman API key for authentication | Yes, when `run-lint` is `true` |
+| `POSTMAN_API_KEY` | Postman API key for authentication | Yes |
 
 ## Outputs
 
