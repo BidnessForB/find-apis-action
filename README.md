@@ -14,7 +14,7 @@ A GitHub Action that finds and lints OAS files in the current commit which have 
 #### Usage
 ```yaml
 - name: Find and Lint API Changes
-  uses: bidnessforb/lint-modified-apis@v0.9.4
+  uses: bidnessforb/lint-modified-apis@v1.0.0
   id: api-changes
   with:
     postman-directory: '.postman'  # Optional, defaults to '.postman'
